@@ -1,10 +1,8 @@
 #' Fitting Normalised Power Priors
 #'
 #' NPP is used to fit a Normalised Power Prior (NPP) to analysis of a (crruent) dataset, using a second (historical) dataset to formulate the power prior.
-#' @param Trt A vector of 1's and 0's denoting treatment or control arms, respectively, for the current dataset
-#' @param Trt0 A vector of 1's and 0's denoting treatment or control arms, respectivly, for the historical dataset
-#' @param X A matrix. The design matrix for the current dataset, excluding treatment allocation indicator and intercept term
-#' @param X0 A matrix. The design matrix for the historical dataset, excluding treatment allocation indicator and intercept term
+#' @param X A matrix. The design matrix for the current dataset, excluding the intercept term. The first column must represent treatment allocation.
+#' @param X0 A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation.
 #' @param Y A vector containing the outcome data for the current dataset
 #' @param Y0 A vector containing the outcome data for the current dataset
 #' @param Z A vector of consecutive integers containing cluster indices for the current dataset.
@@ -29,10 +27,8 @@
 #' @examples 
 #' TO UPDATE;
 #' @export
-NPP = function(Trt,
-               Trt0, 
-               X = NULL, 
-               X0 = NULL, 
+NPP = function(X, 
+               X0, 
                Y, 
                Y0, 
                Z, 
@@ -74,10 +70,16 @@ NPP = function(Trt,
   if(!is.matrix(X)){
     stop("X must be a matrix")
   }
+  if(min(X[,1] %in% c(0,1)) == 0){
+    stop("The first column of X relates to allocated group, and must contain only 1s and 0s.")
+  }
   
   #X0
   if(!is.matrix(X0)){
     stop("X0 must be a matrix")
+  }
+  if(min(X0[,1] %in% c(0,1)) == 0){
+    stop("The first column of X0 relates to allocated group, and must contain only 1s and 0s.")
   }
   
   #Y
@@ -112,17 +114,15 @@ NPP = function(Trt,
   }
   #Cross-check datasets - make sure that each dataset has the same sample size across all inputs
   
-  if(!all(sapply(list(length(Trt0), nrow(X0), length(Y0), length(Z0)), function(x) x == length(Z0)))){
-    stop(cat(paste("All inputs pertaining to the historical data (Trt0, X0, Y0 and Z0) must all contain the same number of elements \n", 
-                   "Trt0 contains ", length(Trt0), " elements. \n",
+  if(!all(sapply(list(nrow(X0), length(Y0), length(Z0)), function(x) x == length(Z0)))){
+    stop(cat(paste("All inputs pertaining to the historical data (X0, Y0 and Z0) must all contain the same number of elements \n", 
                    "X0 contains ", nrow(X0), " elements (rows). \n",
                    "Y0 contains ", length(Y0), " elements. \n", 
                    "Z0 contains ", length(Z0), " elements.")))
   }
   
-  if(!all(sapply(list(length(Trt), nrow(X), length(Y), length(Z)), function(x) x == length(Z)))){
-    stop(cat(paste("All inputs pertaining to the current data (Trt, X, Y and Z) must all contain the same number of elements \n", 
-                   "Trt contains ", length(Trt), " elements. \n",
+  if(!all(sapply(list(nrow(X), length(Y), length(Z)), function(x) x == length(Z)))){
+    stop(cat(paste("All inputs pertaining to the current data (X, Y and Z) must all contain the same number of elements \n", 
                    "X contains ", nrow(X), " elements (rows). \n",
                    "Y contains ", length(Y), " elements. \n", 
                    "Z contains ", length(Z), " elements.")))
@@ -172,8 +172,6 @@ NPP = function(Trt,
   if(thin <= 0){
     stop("thin must be positive")
   }
-  
-  
   
   
   ##Normalisation Approximation
