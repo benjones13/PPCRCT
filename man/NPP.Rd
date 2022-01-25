@@ -7,10 +7,12 @@
 NPP(
   Trt,
   Trt0,
-  X,
-  X0,
+  X = NULL,
+  X0 = NULL,
   Y,
   Y0,
+  Z,
+  Z0,
   sigmaprior = c("hnormal", "hcauchy"),
   reg.prior.mean = 0,
   reg.prior.sd,
@@ -32,11 +34,17 @@ NPP(
 
 \item{Trt0}{A vector of 1's and 0's denoting treatment or control arms, respectivly, for the historical dataset}
 
-\item{X}{The design matrix for the current dataset, excluding treatment allocation indicator and intercept term}
+\item{X}{A matrix. The design matrix for the current dataset, excluding treatment allocation indicator and intercept term}
 
-\item{X0}{The design matrix for the historical dataset, excluding treatment allocation indicator and intercept term}
+\item{X0}{A matrix. The design matrix for the historical dataset, excluding treatment allocation indicator and intercept term}
 
 \item{Y}{A vector containing the outcome data for the current dataset}
+
+\item{Y0}{A vector containing the outcome data for the current dataset}
+
+\item{Z}{A vector of consecutive integers containing cluster indices for the current dataset.}
+
+\item{Z0}{A vector of consecutive integers containing cluster indices for the historical dataset.}
 
 \item{sigmaprior}{One of either "hnormal" or "hcauchy" to indicated whethere a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter}
 
