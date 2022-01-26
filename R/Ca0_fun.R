@@ -16,7 +16,7 @@
 #' @param adapt_delta_normalise Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. See \link[rstan]{sampling}. Passed from \link[PPCRCT]{NPP}.
 #' @param a0_increment Value of the increments by which \code{a0} is increased between each estimation of the normalising constant. 
 #' @return Returns a grid of values of \code{a0} between 0 and 1 of length 10000, and associated estimates of the normalising constant.
-
+#' @export
 Ca0_fun = function(X0 = X0,
                    Y0 = Y0,
                    Z0 = Z0,
