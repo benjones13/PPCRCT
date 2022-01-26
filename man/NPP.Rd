@@ -5,10 +5,8 @@
 \title{Fitting Normalised Power Priors}
 \usage{
 NPP(
-  Trt,
-  Trt0,
-  X = NULL,
-  X0 = NULL,
+  X,
+  X0,
   Y,
   Y0,
   Z,
@@ -17,26 +15,24 @@ NPP(
   reg.prior.mean = 0,
   reg.prior.sd,
   nits_normalise = 2000,
-  burnin_normalise = nits_normalise/2,
+  burnin_normalise = floor(nits_normalise/2),
   nchains_normalise = 4,
   max_treedepth_normalise = 10,
+  thin_normalise = 1,
   adapt_delta_normalise = 0.95,
   nits = 5000,
-  burnin = nits/2,
+  burnin = floor(nits_normalise/2),
   nchains = 4,
   max_treedepth = 10,
+  thin = 1,
   adapt_delta = 0.95,
   ...
 )
 }
 \arguments{
-\item{Trt}{A vector of 1's and 0's denoting treatment or control arms, respectively, for the current dataset}
+\item{X}{A matrix. The design matrix for the current dataset, excluding the intercept term. The first column must represent treatment allocation.}
 
-\item{Trt0}{A vector of 1's and 0's denoting treatment or control arms, respectivly, for the historical dataset}
-
-\item{X}{A matrix. The design matrix for the current dataset, excluding treatment allocation indicator and intercept term}
-
-\item{X0}{A matrix. The design matrix for the historical dataset, excluding treatment allocation indicator and intercept term}
+\item{X0}{A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation.}
 
 \item{Y}{A vector containing the outcome data for the current dataset}
 
@@ -58,7 +54,9 @@ NPP(
 
 \item{nchains_normalise}{An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for estimating the normalising constant}
 
-\item{max_treedepth_normalise}{Maximum treedepth for the Markov Chain monte carlo procedure for estimating the normalising constant. See link stan documentation}
+\item{max_treedepth_normalise}{Maximum treedepth for the Markov Chain Monte Carlo procedure for estimating the normalising constant. See link stan documentation}
+
+\item{thin_normalise}{A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure estimating the normalising constant. Defaults to 1}
 
 \item{adapt_delta_normalise}{Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. See link stan documentation}
 
@@ -69,6 +67,8 @@ NPP(
 \item{nchains}{An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for estimating the normalising constant}
 
 \item{max_treedepth}{Maximum treedepth for the Markov Chain monte carlo procedure for estimating the NPP. See link stan documentation}
+
+\item{thin}{A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure fitting the NPP model. Defaults to 1}
 
 \item{adapt_delta}{Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation}
 
