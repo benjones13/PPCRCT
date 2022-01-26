@@ -51,5 +51,5 @@ Ca0_fun(
 Returns a grid of values of \code{a0} between 0 and 1 of length 10000, and associated estimates of the normalising constant.
 }
 \description{
-Ca0_fun is a test modularised function contained within \link[PPCRCT]{NPP} function, which generates a grid of estimated values of the normalising constant.
+Ca0_fun is a modularised function contained within \link[PPCRCT]{NPP} function, which generates a grid of estimated values of the normalising constant.
 }
