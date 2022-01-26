@@ -1,6 +1,6 @@
 Package: PPCRCT
 Title: Power Priors for Cluster Randomised Controlled Trials
-Version: 0.0.6
+Version: 0.0.7
 Authors@R: c(
   person("Ben", "Jones", email = "b.g.jones@exeter.ac.uk", role = c("aut", "cre"))
   )
@@ -11,3 +11,18 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Biarch: true
+Imports: 
+    methods,
+    Rcpp (>= 0.12.0),
+    RcppParallel (>= 5.0.1),
+    rstan (>= 2.18.1),
+    rstantools (>= 2.1.1)
+LinkingTo: 
+    BH (>= 1.66.0),
+    Rcpp (>= 0.12.0),
+    RcppEigen (>= 0.3.3.3.0),
+    RcppParallel (>= 5.0.1),
+    rstan (>= 2.18.1),
+    StanHeaders (>= 2.18.0)
+SystemRequirements: GNU make

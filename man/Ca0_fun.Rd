@@ -2,9 +2,23 @@
 % Please edit documentation in R/Ca0_fun.R
 \name{Ca0_fun}
 \alias{Ca0_fun}
-\title{Calculating normalising constant for an NPP}
+\title{Calculate normalising constant for an NPP}
 \usage{
-Ca0_fun(X0 = X0, Y0 = Y0, Z0 = Z0, a0_increment = a0_increment)
+Ca0_fun(
+  X0 = X0,
+  Y0 = Y0,
+  Z0 = Z0,
+  sigmaprior = sigmaprior,
+  reg.prior.mean = reg.prior.mean,
+  reg.prior.sd = reg.prior.sd,
+  nits_normalise = nits_normalise,
+  burnin_normalise = burnin_normalise,
+  nchains_normalise = nchains_normalise,
+  max_treedepth_normalise = max_treedepth_normalise,
+  thin_normalise = thin_normalise,
+  adapt_delta_normalise,
+  a0_increment = a0_increment
+)
 }
 \arguments{
 \item{X0}{A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation. Passed from \link[PPCRCT]{NPP}.}
@@ -29,10 +43,13 @@ Ca0_fun(X0 = X0, Y0 = Y0, Z0 = Z0, a0_increment = a0_increment)
 
 \item{thin_normalise}{A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure estimating the normalising constant. Defaults to 1. Passed from \link[PPCRCT]{NPP}.}
 
-\item{adapt_delta_normalise}{Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. See \link[rstan]{sampling} documentation. Passed from \link[PPCRCT]{NPP}.}
+\item{adapt_delta_normalise}{Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. See \link[rstan]{sampling}. Passed from \link[PPCRCT]{NPP}.}
 
-\item{adapt_delta}{Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation}
+\item{a0_increment}{Value of the increments by which \code{a0} is increased between each estimation of the normalising constant.}
+}
+\value{
+Returns a grid of values of \code{a0} between 0 and 1 of length 10000, and associated estimates of the normalising constant.
 }
 \description{
-Ca0_fun is a modularised function contained within \link[PPCRCT]{NPP} function. Not for use by users.
+Ca0_fun is a test modularised function contained within \link[PPCRCT]{NPP} function, which generates a grid of estimated values of the normalising constant.
 }

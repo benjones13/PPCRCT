@@ -43,13 +43,13 @@ Ca0_fun = function(X0 = X0,
                                J0 = length(unique(Z0)),
                                P = ncol(X0),
                                y0 = Y0,
-                               SchoolCode0 = histdat2$SchoolCode,
-                               X0 = histdat2[,c(1,3)],
+                               Z0 = Z0,
+                               X0 = X0,
                                a0 = i)
        if(sigmaprior == "hcauchy"){
-       result = sampling(PP_histonly_hcauchy, data = PP_histonly_dat, refresh = 0, control = list(adapt_delta = 0.9999,max_treedepth = 10), iter = 3500, seed = seed)
+       result = rstan::sampling(PP_histonly_hcauchy, data = PP_histonly_dat, refresh = 0, control = list(adapt_delta = 0.9999,max_treedepth = 10), iter = 3500, seed = seed)
        }else if(sigmaprior == "hnormal"){
-       result = sampling(PP_histonly_hnormal, data = PP_histonly_dat, refresh = 0, control = list(adapt_delta = 0.9999,max_treedepth = 10), iter = 3500, seed = seed)
+       result = rstan::sampling(PP_histonly_hnormal, data = PP_histonly_dat, refresh = 0, control = list(adapt_delta = 0.9999,max_treedepth = 10), iter = 3500, seed = seed)
        }
        t <- get_sampler_params(result, inc_warmup = F)
        divergent <- sum(t[[1]][,"divergent__"],t[[2]][,"divergent__"],t[[3]][,"divergent__"],t[[4]][,"divergent__"])
