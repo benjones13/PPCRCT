@@ -12,7 +12,7 @@ NPP(
   Z,
   Z0,
   sigma.b.prior = c("hnormal", "hcauchy"),
-  intercept.prior.mean = NULL,
+  intercept.prior.mean = 0,
   intercept.prior.sd = NULL,
   reg.prior.mean = 0,
   reg.prior.sd = NULL,

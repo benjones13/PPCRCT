@@ -142,7 +142,7 @@ NPP = function(X,
   
   ##Prior distributions
   #Intercept
-  if(is.null(intercept.prior.sd){
+  if(is.null(intercept.prior.sd)){
     intercept.prior.sd = sd(Y0) * 2.5
   }
   
