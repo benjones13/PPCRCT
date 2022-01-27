@@ -183,7 +183,23 @@ NPP = function(X,
   
   
   ##Normalisation Approximation
-  
+  C_grid = Ca0_fun(X0 = X0,
+                   Y0 = Y0,
+                   Z0 = Z0,
+                   sigma.b.prior = sigma.b.prior,
+                   intercept.prior.mean = intercept.prior.mean,
+                   itercept.prior.sd = intercept.prior.sd,
+                   reg.prior.mean = reg.prior.mean,
+                   reg.prior.sd = reg.prior.sd,
+                   sigma.b.prior.parm = sigma.b.prior.parm,
+                   sigma.prior.parm = sigma.prior.parm,
+                   nits_normalise = nits_normalise,
+                   burnin_normalise = burnin_normalise,
+                   nchains_normalise = nchains_normalise,
+                   max_treedepth_normalise = max_treedepth_normalise,
+                   thin_normalise = thin_normalise,
+                   adapt_delta_normalise = adapt_delta_normalise,
+                   a0_increment = a0_increment)
   
   ##NPP model fit
   
