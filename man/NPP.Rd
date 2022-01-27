@@ -11,9 +11,13 @@ NPP(
   Y0,
   Z,
   Z0,
-  sigmaprior = c("hnormal", "hcauchy"),
+  sigma.b.prior = c("hnormal", "hcauchy"),
+  intercept.prior.mean = NULL,
+  intercept.prior.sd = NULL,
   reg.prior.mean = 0,
-  reg.prior.sd,
+  reg.prior.sd = NULL,
+  sigma.b.prior.parm = NULL,
+  sigma.prior.parm = NULL,
   nits_normalise = 2000,
   burnin_normalise = floor(nits_normalise/2),
   nchains_normalise = 4,
@@ -42,11 +46,19 @@ NPP(
 
 \item{Z0}{A vector of consecutive integers containing cluster indices for the historical dataset.}
 
-\item{sigmaprior}{One of either "hnormal" or "hcauchy" to indicated whethere a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter}
+\item{sigma.b.prior}{One of either "hnormal" or "hcauchy" to indicated whethere a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter}
 
-\item{reg.prior.mean}{The mean for the normal prior distribution for each of the regression coefficients}
+\item{intercept.prior.mean}{The mean for the normal prior distribution for the intercept}
 
-\item{reg.prior.sd}{The standard deviation for the normal prior distribution for each of the regression coefficients}
+\item{intercept.prior.sd}{The standard deviation for the normal prior distribution for the intercept}
+
+\item{reg.prior.mean}{A vector of means for the normal prior distribution for each of the regression coefficients (of length equal to the number of columns of \code{X0}).}
+
+\item{reg.prior.sd}{A vector of standard deviations for the normal prior distribution for each of the regression coefficients(of length equal to the number of columns of \code{X0}).}
+
+\item{sigma.b.prior.parm}{The parameter for the prior distribution on the between cluster standard deviation. If \code{sigma.b.prior = "hcauchy"} this represents the scale parameter of the half-cauchy distribution. If \code{sigma.b.prior = "hnormal"} this represents that standard deviation parameter of the half-normal distribution.}
+
+\item{sigma.prior.parm}{The rate parameter for the exponential prior distribution for the residual standard deviation.}
 
 \item{nits_normalise}{An integer. Number of iterations per chain used in the Markov Chain Monte Carlo procedure for estimating the normalising constant}
 

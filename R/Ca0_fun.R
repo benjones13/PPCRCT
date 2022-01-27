@@ -5,9 +5,11 @@
 #' @param X0 A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation. Passed from \link[PPCRCT]{NPP}.
 #' @param Y0 A vector containing the outcome data for the current dataset. Passed from \link[PPCRCT]{NPP}. 
 #' @param Z0 A vector of consecutive integers containing cluster indices for the historical dataset. Passed from \link[PPCRCT]{NPP}. 
-#' @param sigmaprior One of either "hnormal" or "hcauchy" to indicated whethere a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter. Passed from \link[PPCRCT]{NPP}.
-#' @param reg.prior.mean The mean for the normal prior distribution for each of the regression coefficients. Passed from \link[PPCRCT]{NPP}.
-#' @param reg.prior.sd The standard deviation for the normal prior distribution for each of the regression coefficients. Passed from \link[PPCRCT]{NPP}.
+#' @param sigma.b.prior One of either "hnormal" or "hcauchy" to indicated whethere a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter
+#' @param reg.prior.mean A vector of means for the normal prior distribution for each of the regression coefficients (of length equal to the number of columns of \code{X0}). Passed from \link[PPCRCT]{NPP}.
+#' @param reg.prior.sd A vector of standard deviations for the normal prior distribution for each of the regression coefficients(of length equal to the number of columns of \code{X0}). Passed from \link[PPCRCT]{NPP}.
+#' @param sigma.b.prior.parm The parameter for the prior distribution on the between cluster standard deviation. If \code{sigma.b.prior = "hcauchy"} this represents the scale parameter of the half-cauchy distribution. If \code{sigma.b.prior = "hnormal"} this represents that standard deviation parameter of the half-normal distribution.
+#' @param sigma.prior.parm The rate parameter for the exponential prior distribution for the residual standard deviation.  Passed from \link[PPCRCT]{NPP}.
 #' @param nits_normalise An integer. Number of iterations per chain used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. Passed from \link[PPCRCT]{NPP}.
 #' @param burnin_normalise An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for estimating the normalising constant. Passed from \link[PPCRCT]{NPP}.
 #' @param nchains_normalise An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. Passed from \link[PPCRCT]{NPP}.
@@ -20,15 +22,19 @@
 Ca0_fun = function(X0 = X0,
                    Y0 = Y0,
                    Z0 = Z0,
-                   sigmaprior = sigmaprior,
+                   sigma.b.prior = sigma.b.prior,
+                   intercept.prior.mean = intercept.prior.mean,
+                   itercept.prior.sd = intercept.prior.sd,
                    reg.prior.mean = reg.prior.mean,
                    reg.prior.sd = reg.prior.sd,
+                   sigma.b.prior.parm = sigma.b.prior.parm,
+                   sigma.prior.parm = sigma.prior.parm,
                    nits_normalise = nits_normalise,
                    burnin_normalise = burnin_normalise,
                    nchains_normalise = nchains_normalise,
                    max_treedepth_normalise = max_treedepth_normalise,
                    thin_normalise = thin_normalise,
-                   adapt_delta_normalise,
+                   adapt_delta_normalise = adapt_delta_normalise,
                    a0_increment = a0_increment){
    
    d <- data.frame(a0 = seq(a0_increment,1,by = a0_increment), C = NA)
@@ -45,9 +51,17 @@ Ca0_fun = function(X0 = X0,
                                y0 = Y0,
                                Z0 = Z0,
                                X0 = X0,
-                               a0 = i)
+                               a0 = i,
+                               intercept_prior_mean = intercept.prior.mean,
+                               intercept_prior_sd = intercept.prior.sd,
+                               reg_prior_mean = reg.prior.mean,
+                               reg_prior_sd = reg.prior.sd,
+                               sigma_b_prior = sigma.b.prior,
+                               sigma_prior = sigma.prior.parm)
        if(sigmaprior == "hcauchy"){
-       result = rstan::sampling(PP_histonly_hcauchy, data = PP_histonly_dat, refresh = 0, control = list(adapt_delta = 0.9999,max_treedepth = 10), iter = 3500, seed = seed)
+       result = rstan::sampling(PP_histonly_hcauchy, data = PP_histonly_dat, refresh = 0,
+                                control = list(adapt_delta = adapt_delta_normalise, max_treedepth = max_treedepth_normalise),
+                                iter = nits_normalise, thin = thin_normalise, seed = seed, warmup = burnin_normalise)
        }else if(sigmaprior == "hnormal"){
        result = rstan::sampling(PP_histonly_hnormal, data = PP_histonly_dat, refresh = 0, control = list(adapt_delta = 0.9999,max_treedepth = 10), iter = 3500, seed = seed)
        }

@@ -6,7 +6,12 @@ data{
   int<lower=0,upper=J0> SchoolCode0[N0];
   matrix[N0,P] X0;
   real<lower=0,upper=1> a0; //discounting parameter
-
+  real intercept_prior_mean; 
+  real<lower = 0> intercept_prior_sd;
+  real reg_prior_mean[P];
+  real reg_prior_sd[P];
+  real<lower=0> sigma_b_prior;
+  real<lower = 0> sigma_prior;
 }
 
 parameters{
@@ -26,8 +31,10 @@ model{
   //priors
   target += a0 * normal_lpdf(y0|mu0, sigma);
   target += normal_lpdf(eta0_raw|0,1);
-  target += normal_lpdf(alpha|0,5);
-  target += normal_lpdf(beta|0,5);
-  target += exponential_lpdf(sigma|1);
-  target += cauchy_lpdf(sigma_eta|0,.3) - cauchy_lccdf(0|0,.3);
+  target += normal_lpdf(alpha|intercept_prior_mean,intercept_prior_sd);
+  for(p in 1:P){
+    target += normal_lpdf(beta[p]|reg_prior_mean[p],reg_prior_sd[p]);
+  }
+  target += exponential_lpdf(sigma|sigma_prior);
+  target += cauchy_lpdf(sigma_eta|0,sigma_b_prior) - cauchy_lccdf(0|0,sigma_b_prior);
 }

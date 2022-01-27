@@ -8,15 +8,19 @@ Ca0_fun(
   X0 = X0,
   Y0 = Y0,
   Z0 = Z0,
-  sigmaprior = sigmaprior,
+  sigma.b.prior = sigma.b.prior,
+  intercept.prior.mean = intercept.prior.mean,
+  itercept.prior.sd = intercept.prior.sd,
   reg.prior.mean = reg.prior.mean,
   reg.prior.sd = reg.prior.sd,
+  sigma.b.prior.parm = sigma.b.prior.parm,
+  sigma.prior.parm = sigma.prior.parm,
   nits_normalise = nits_normalise,
   burnin_normalise = burnin_normalise,
   nchains_normalise = nchains_normalise,
   max_treedepth_normalise = max_treedepth_normalise,
   thin_normalise = thin_normalise,
-  adapt_delta_normalise,
+  adapt_delta_normalise = adapt_delta_normalise,
   a0_increment = a0_increment
 )
 }
@@ -27,11 +31,15 @@ Ca0_fun(
 
 \item{Z0}{A vector of consecutive integers containing cluster indices for the historical dataset. Passed from \link[PPCRCT]{NPP}.}
 
-\item{sigmaprior}{One of either "hnormal" or "hcauchy" to indicated whethere a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter. Passed from \link[PPCRCT]{NPP}.}
+\item{sigma.b.prior}{One of either "hnormal" or "hcauchy" to indicated whethere a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter}
 
-\item{reg.prior.mean}{The mean for the normal prior distribution for each of the regression coefficients. Passed from \link[PPCRCT]{NPP}.}
+\item{reg.prior.mean}{A vector of means for the normal prior distribution for each of the regression coefficients (of length equal to the number of columns of \code{X0}). Passed from \link[PPCRCT]{NPP}.}
 
-\item{reg.prior.sd}{The standard deviation for the normal prior distribution for each of the regression coefficients. Passed from \link[PPCRCT]{NPP}.}
+\item{reg.prior.sd}{A vector of standard deviations for the normal prior distribution for each of the regression coefficients(of length equal to the number of columns of \code{X0}). Passed from \link[PPCRCT]{NPP}.}
+
+\item{sigma.b.prior.parm}{The parameter for the prior distribution on the between cluster standard deviation. If \code{sigma.b.prior = "hcauchy"} this represents the scale parameter of the half-cauchy distribution. If \code{sigma.b.prior = "hnormal"} this represents that standard deviation parameter of the half-normal distribution.}
+
+\item{sigma.prior.parm}{The rate parameter for the exponential prior distribution for the residual standard deviation.  Passed from \link[PPCRCT]{NPP}.}
 
 \item{nits_normalise}{An integer. Number of iterations per chain used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. Passed from \link[PPCRCT]{NPP}.}
 
