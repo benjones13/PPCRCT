@@ -1,6 +1,6 @@
 Package: PPCRCT
 Title: Power Priors for Cluster Randomised Controlled Trials
-Version: 0.0.10
+Version: 0.0.11
 Authors@R: c(
   person("Ben", "Jones", email = "b.g.jones@exeter.ac.uk", role = c("aut", "cre"))
   )
@@ -15,6 +15,7 @@ Biarch: true
 Imports: 
     methods,
     bridgesampling,
+    gam,
     Rcpp (>= 0.12.0),
     RcppParallel (>= 5.0.1),
     rstan (>= 2.18.1),

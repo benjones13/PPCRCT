@@ -75,7 +75,7 @@ Ca0_fun = function(X0 = X0,
      d$divergent[d$a0 == i] <- divergent
    }
    
-   g <- gam(C ~ s(a0), data = d)
+   g <- gam::gam(C ~ s(a0), data = d)
    a0_grid = seq(0,1,length = 10000)
    C_grid = predict(g, data.frame(a0 = a0_grid))
    C_grid
