@@ -19,17 +19,18 @@ NPP(
   sigma.b.prior.parm = NULL,
   sigma.prior.parm = NULL,
   nits_normalise = 2000,
-  burnin_normalise = floor(nits_normalise/2),
+  burnin_normalise = NULL,
   nchains_normalise = 4,
   max_treedepth_normalise = 10,
   thin_normalise = 1,
   adapt_delta_normalise = 0.95,
-  nits = 5000,
-  burnin = floor(nits_normalise/2),
-  nchains = 4,
-  max_treedepth = 10,
-  thin = 1,
-  adapt_delta = 0.95,
+  nits_npp = 5000,
+  burnin_npp = NULL,
+  nchains_npp = 4,
+  max_treedepth_npp = 10,
+  thin_npp = 1,
+  adapt_delta_npp = 0.95,
+  a0_increment = 0.05,
   ...
 )
 }
@@ -72,17 +73,19 @@ NPP(
 
 \item{adapt_delta_normalise}{Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. See link stan documentation}
 
-\item{nits}{An integer. Number of iterations per chain to be used in the Markov Chain Monte Carlo procedure for fitting the NPP model}
+\item{nits_npp}{An integer. Number of iterations per chain to be used in the Markov Chain Monte Carlo procedure for fitting the NPP model}
 
-\item{burnin}{An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the NPP model}
+\item{burnin_npp}{An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the NPP model}
 
-\item{nchains}{An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for estimating the normalising constant}
+\item{nchains_npp}{An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for estimating the normalising constant}
 
-\item{max_treedepth}{Maximum treedepth for the Markov Chain monte carlo procedure for estimating the NPP. See link stan documentation}
+\item{max_treedepth_npp}{Maximum treedepth for the Markov Chain monte carlo procedure for estimating the NPP. See link stan documentation}
 
-\item{thin}{A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure fitting the NPP model. Defaults to 1}
+\item{thin_npp}{A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure fitting the NPP model. Defaults to 1}
 
-\item{adapt_delta}{Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation}
+\item{adapt_delta_npp}{Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation}
+
+\item{a0_increment}{Value of the increments by which \code{a0} is increased between each estimation of the normalising constant.}
 
 \item{...}{Further arguments passed to or from other methods}
 }

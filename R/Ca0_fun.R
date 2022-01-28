@@ -39,8 +39,8 @@ Ca0_fun = function(X0 = X0,
    
    d <- data.frame(a0 = seq(a0_increment,1,by = a0_increment), C = NA)
    
-   for(i in seq(0.05,1,by = 0.05)){
-     print(i)
+   for(i in seq(a0_increment,1,by = a0_increment)){
+     print(paste0(i * 100,"%: a0 = ", i))
      seed = i*100
      success = F
      while(!success){
@@ -56,26 +56,26 @@ Ca0_fun = function(X0 = X0,
                                intercept_prior_sd = intercept.prior.sd,
                                reg_prior_mean = reg.prior.mean,
                                reg_prior_sd = reg.prior.sd,
-                               sigma_b_prior = sigma.b.prior,
+                               sigma_b_prior = sigma.b.prior.parm,
                                sigma_prior = sigma.prior.parm)
-       if(sigmaprior == "hcauchy"){
+       if(sigma.b.prior == "hcauchy"){
        result = rstan::sampling(stanmodels$Hier_PP_HistoricOnly_hcauchy, data = PP_histonly_dat, refresh = 0,
                                 control = list(adapt_delta = adapt_delta_normalise, max_treedepth = max_treedepth_normalise),
                                 iter = nits_normalise, thin = thin_normalise, seed = seed, warmup = burnin_normalise)
-       }else if(sigmaprior == "hnormal"){
+       }else if(sigma.b.prior == "hnormal"){
          result = rstan::sampling(stanmodels$Hier_PP_HistoricOnly_hnormal, data = PP_histonly_dat, refresh = 0,
                                   control = list(adapt_delta = adapt_delta_normalise, max_treedepth = max_treedepth_normalise),
                                   iter = nits_normalise, thin = thin_normalise, seed = seed, warmup = burnin_normalise)       }
-       t <- get_sampler_params(result, inc_warmup = F)
+       t <- rstan::get_sampler_params(result, inc_warmup = F)
        divergent <- sum(t[[1]][,"divergent__"],t[[2]][,"divergent__"],t[[3]][,"divergent__"],t[[4]][,"divergent__"])
        success = ifelse(divergent == 0,T,F)
      }
      set.seed(seed)
-     d$C[d$a0 == i] <- bridgesampling::bridge_sampler(result, method = "normal")$logml
+     ddpcr::quiet(d$C[d$a0 == i] <- bridgesampling::bridge_sampler(result, method = "normal")$logml)
      d$divergent[d$a0 == i] <- divergent
    }
    
-   g <- gam::gam(C ~ s(a0), data = d)
+   g <- gam::gam(C ~ gam::s(a0), data = d)
    a0_grid = seq(0,1,length = 10000)
    C_grid = predict(g, data.frame(a0 = a0_grid))
    C_grid

@@ -20,12 +20,13 @@
 #' @param max_treedepth_normalise Maximum treedepth for the Markov Chain Monte Carlo procedure for estimating the normalising constant. See link stan documentation
 #' @param thin_normalise A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure estimating the normalising constant. Defaults to 1
 #' @param adapt_delta_normalise Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. See link stan documentation
-#' @param nits An integer. Number of iterations per chain to be used in the Markov Chain Monte Carlo procedure for fitting the NPP model
-#' @param burnin An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the NPP model
-#' @param nchains An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for estimating the normalising constant
-#' @param max_treedepth Maximum treedepth for the Markov Chain monte carlo procedure for estimating the NPP. See link stan documentation
-#' @param thin A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure fitting the NPP model. Defaults to 1
-#' @param adapt_delta Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation
+#' @param nits_npp An integer. Number of iterations per chain to be used in the Markov Chain Monte Carlo procedure for fitting the NPP model
+#' @param burnin_npp An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the NPP model
+#' @param nchains_npp An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for estimating the normalising constant
+#' @param max_treedepth_npp Maximum treedepth for the Markov Chain monte carlo procedure for estimating the NPP. See link stan documentation
+#' @param thin_npp A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure fitting the NPP model. Defaults to 1
+#' @param adapt_delta_npp Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation
+#' @param a0_increment Value of the increments by which \code{a0} is increased between each estimation of the normalising constant. 
 #' @param ... Further arguments passed to or from other methods
 #' @return TO UPDATE
 #' @examples 
@@ -45,35 +46,20 @@ NPP = function(X,
                sigma.b.prior.parm = NULL,
                sigma.prior.parm = NULL,
                nits_normalise = 2000,
-               burnin_normalise = floor(nits_normalise/2),
+               burnin_normalise = NULL,
                nchains_normalise = 4,
                max_treedepth_normalise = 10,
                thin_normalise = 1,
                adapt_delta_normalise = 0.95,
-               nits = 5000,
-               burnin = floor(nits_normalise/2),
-               nchains = 4,
-               max_treedepth = 10,
-               thin = 1,
-               adapt_delta = 0.95,
+               nits_npp = 5000,
+               burnin_npp = NULL,
+               nchains_npp = 4,
+               max_treedepth_npp = 10,
+               thin_npp = 1,
+               adapt_delta_npp = 0.95,
+               a0_increment = 0.05,
                ...){
   ##QA Checks of input parameters##
-  #Trt
-  if(min(Trt %in% c(0,1)) == 0){
-    stop("Values of Trt must be only be 1 or 0")
-  }
-  if(!is.vector(Trt)){
-    stop("Trt must be a vector")
-  }
-  
-  #Trt0
-  if(min(Trt0 %in% c(0,1)) == 0){
-    stop("Values of Trt0 must be only be 1 or 0")
-  }
-  if(!is.vector(Trt0)){
-    stop("Trt0 must be a vector")
-  }
-  
   #X
   if(!is.matrix(X)){
     stop("X must be a matrix")
@@ -183,7 +169,9 @@ NPP = function(X,
 
   
   #Checking Stan inputs
-  
+  if(is.null(burnin_normalise)){
+    burnin_normalise = nits_normalise/2
+  }
   if(burnin_normalise >= nits_normalise){
     stop("burnin_normalise must be less than nits_normalise")
   }
@@ -202,28 +190,29 @@ NPP = function(X,
   if(thin_normalise <= 0){
     stop("thin_normalise must be positive")
   }
-  
-  
-  if(burnin >= nits){
+  if(is.null(burnin_npp)){
+    burnin_npp = nits_npp/2
+  }
+  if(burnin_npp >= nits_npp){
     stop("burnin must be less than nits")
   }
-  if(adapt_delta >= 1 | adapt_delta <= 0){
+  if(adapt_delta_npp >= 1 | adapt_delta_npp <= 0){
     stop("adapt_delta must be between 0 and 1")
   }
-  if(max_treedepth != round(max_treedepth)){
+  if(max_treedepth_npp != round(max_treedepth_npp)){
     stop("max_treedepth must be an integer")
   }
-  if(max_treedepth <= 0){
+  if(max_treedepth_npp <= 0){
     stop("max_treedepth must be positive")
   }
-  if(thin != round(thin)){
+  if(thin_npp != round(thin_npp)){
     stop("thin must be an integer")
   }
-  if(thin <= 0){
+  if(thin_npp <= 0){
     stop("thin must be positive")
   }
   
-  
+  print("Data checks ok. Calculating the normalising constant...")
   ##Normalisation Approximation
   C_grid = Ca0_fun(X0 = X0,
                    Y0 = Y0,
