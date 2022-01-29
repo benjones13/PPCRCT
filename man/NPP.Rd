@@ -31,6 +31,7 @@ NPP(
   thin_npp = 1,
   adapt_delta_npp = 0.95,
   a0_increment = 0.05,
+  seed = 12345,
   ...
 )
 }
@@ -86,6 +87,8 @@ NPP(
 \item{adapt_delta_npp}{Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation}
 
 \item{a0_increment}{Value of the increments by which \code{a0} is increased between each estimation of the normalising constant.}
+
+\item{seed}{Set the seed.}
 
 \item{...}{Further arguments passed to or from other methods}
 }

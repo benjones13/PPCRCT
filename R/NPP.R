@@ -27,6 +27,7 @@
 #' @param thin_npp A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure fitting the NPP model. Defaults to 1
 #' @param adapt_delta_npp Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation
 #' @param a0_increment Value of the increments by which \code{a0} is increased between each estimation of the normalising constant. 
+#' @param seed Set the seed.
 #' @param ... Further arguments passed to or from other methods
 #' @return TO UPDATE
 #' @examples 
@@ -58,6 +59,7 @@ NPP = function(X,
                thin_npp = 1,
                adapt_delta_npp = 0.95,
                a0_increment = 0.05,
+               seed = 12345,
                ...){
   ##QA Checks of input parameters##
   #X
@@ -211,7 +213,7 @@ NPP = function(X,
   if(thin_npp <= 0){
     stop("thin must be positive")
   }
-  
+
   print("Data checks ok. Calculating the normalising constant...")
   ##Normalisation Approximation
   C_grid = Ca0_fun(X0 = X0,
@@ -230,9 +232,30 @@ NPP = function(X,
                    max_treedepth_normalise = max_treedepth_normalise,
                    thin_normalise = thin_normalise,
                    adapt_delta_normalise = adapt_delta_normalise,
-                   a0_increment = a0_increment)
-  
+                   a0_increment = a0_increment, seed = seed)
+
+  print("Fitting the NPP...")
   ##NPP model fit
-  C_grid
-  
+  result = NPP_modelfit(X = X,
+                        X0 = X0,
+                        Y = Y,
+                        Y0 = Y0,
+                        Z = Z,
+                        Z0 = Z0,
+                        sigma.b.prior = sigma.b.prior,
+                        intercept.prior.mean = intercept.prior.mean,
+                        itercept.prior.sd = intercept.prior.sd,
+                        reg.prior.mean = reg.prior.mean,
+                        reg.prior.sd = reg.prior.sd,
+                        sigma.b.prior.parm = sigma.b.prior.parm,
+                        sigma.prior.parm = sigma.prior.parm,
+                        nits_npp = nits_npp,
+                        burnin_npp = burnin_npp,
+                        nchains_npp = chains_npp,
+                        max_treedepth_npp = max_treedepth_npp,
+                        thin_npp = thin_npp,
+                        adapt_delta_npp = adapt_delta_npp,
+                        C_grid = C_grid, seed = seed)
+  result
+ 
 }
