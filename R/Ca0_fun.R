@@ -40,13 +40,15 @@ Ca0_fun = function(X0 = X0,
                    seed = seed){
    
    d <- data.frame(a0 = seq(a0_increment,1,by = a0_increment), C = NA)
-   
    for(i in seq(a0_increment,1,by = a0_increment)){
+     n = 0
      print(paste0(i * 100,"%: a0 = ", i))
      seed = seed
      success = F
      while(!success){
        seed = seed + 1
+       n = n + 1
+       if(n > 30){stop("Approximation of the normalising constant not possible without divergent transitions. Try increasing adapt_delta_normalise above ", adapt_delta_normalise, " or choosing a more informative prior distribution for the between-cluster SD")}
        PP_histonly_dat <- list(N0 = nrow(X0),
                                J0 = length(unique(Z0)),
                                P = ncol(X0),
@@ -61,9 +63,9 @@ Ca0_fun = function(X0 = X0,
                                sigma_b_prior = sigma.b.prior.parm,
                                sigma_prior = sigma.prior.parm)
        #if(sigma.b.prior == "hcauchy"){
-       result = rstan::sampling(stanmodels$Hier_PP_HistoricOnly_hcauchy, data = PP_histonly_dat, refresh = 0,
+       result = suppressWarnings(rstan::sampling(stanmodels$Hier_PP_HistoricOnly_hcauchy, data = PP_histonly_dat, refresh = 0,
                                 control = list(adapt_delta = adapt_delta_normalise, max_treedepth = max_treedepth_normalise),
-                                iter = nits_normalise, thin = thin_normalise, seed = seed, warmup = burnin_normalise)
+                                iter = nits_normalise, thin = thin_normalise, seed = seed, warmup = burnin_normalise))
        # }else if(sigma.b.prior == "hnormal"){
        #   result = rstan::sampling(stanmodels$Hier_PP_HistoricOnly_hnormal, data = PP_histonly_dat, refresh = 0,
        #                            control = list(adapt_delta = adapt_delta_normalise, max_treedepth = max_treedepth_normalise),
