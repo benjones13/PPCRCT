@@ -125,9 +125,9 @@ NPP = function(X,
   }
   
   if(identical(sigma.b.prior, c("hnormal", "hcauchy"))){
-    sigmaprior = ifelse(length(unique(Z0)) < 5, "hcauchy", "hnormal")
+    sigma.b.prior = ifelse(length(unique(Z0)) < 5, "hcauchy", "hnormal")
   }
-  
+ 
   ##Prior distributions
   #Intercept
   if(is.null(intercept.prior.sd)){
