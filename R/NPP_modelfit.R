@@ -18,6 +18,7 @@
 #' @param adapt_delta_normalise Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. See \link[rstan]{sampling}. Passed from \link[PPCRCT]{NPP}.
 #' @param a0_increment Value of the increments by which \code{a0} is increased between each estimation of the normalising constant. 
 #' @param seed Set the seed.
+#' @param cores Number of cores to use in MCMC procedure.
 #' @return Returns a grid of values of \code{a0} between 0 and 1 of length 10000, and associated estimates of the normalising constant.
 #' @export
 
@@ -40,7 +41,9 @@ NPP_modelfit = function(X,
                         max_treedepth_npp,
                         thin_npp, 
                         adapt_delta_npp,
-                        C_grid = C_grid, seed = seed){
+                        C_grid = C_grid, 
+                        seed = seed,
+                        cores = cores){
   a0_grid = seq(0,1,length = 10000)
   PP_histonly_dat = list(N0 = nrow(X0),
                                 J0 = length(unique(Z0)),
@@ -66,11 +69,11 @@ NPP_modelfit = function(X,
   if(sigma.b.prior == "hcauchy"){
     result = rstan::sampling(stanmodels$Hier_PP_hcauchy, data = PP_histonly_dat, refresh = 0,
                              control = list(adapt_delta = adapt_delta_npp, max_treedepth = max_treedepth_npp),
-                             iter = nits_npp, thin = thin_npp, seed = seed, warmup = burnin_npp)
+                             cores = cores, iter = nits_npp, thin = thin_npp, seed = seed, warmup = burnin_npp)
   }else if(sigma.b.prior == "hnormal"){
     result = rstan::sampling(stanmodels$Hier_PP_hnormal, data = PP_histonly_dat, refresh = 0,
                              control = list(adapt_delta = adapt_delta_npp, max_treedepth = max_treedepth_npp),
-                             iter = nits_npp, thin = thin_npp, seed = seed, warmup = burnin_npp)
+                             cores = cores, iter = nits_npp, thin = thin_npp, seed = seed, warmup = burnin_npp)
   }
   
 }

@@ -1,6 +1,6 @@
 #' Fitting Normalised Power Priors
 #'
-#' NPP is used to fit a Normalised Power Prior (NPP) to analysis of a (crruent) dataset, using a second (historical) dataset to formulate the power prior.
+#' NPP is used to fit a Normalised Power Prior (NPP) to analysis of a (current) dataset, using a second (historical) dataset to formulate the power prior.
 #' @param X A matrix. The design matrix for the current dataset, excluding the intercept term. The first column must represent treatment allocation.
 #' @param X0 A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation.
 #' @param Y A vector containing the outcome data for the current dataset
@@ -28,6 +28,7 @@
 #' @param adapt_delta_npp Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation
 #' @param a0_increment Value of the increments by which \code{a0} is increased between each estimation of the normalising constant. 
 #' @param seed Set the seed.
+#' @parallel logical. If TRUE, parallelisation of MCMC chains is implemented.
 #' @param ... Further arguments passed to or from other methods
 #' @return TO UPDATE
 #' @examples 
@@ -60,6 +61,7 @@ NPP = function(X,
                adapt_delta_npp = 0.95,
                a0_increment = 0.05,
                seed = 12345,
+               parallel = F,
                ...){
   ##QA Checks of input parameters##
   #X
@@ -224,6 +226,11 @@ NPP = function(X,
     
   }
   
+  if(parallel){
+    cores = parallel::detectCores()
+  }else{
+    cores = 1
+  }
 
   print("Data checks ok. Calculating the normalising constant...")
   ##Normalisation Approximation
@@ -266,7 +273,7 @@ NPP = function(X,
                         max_treedepth_npp = max_treedepth_npp,
                         thin_npp = thin_npp,
                         adapt_delta_npp = adapt_delta_npp,
-                        C_grid = C_grid, seed = seed)
+                        C_grid = C_grid, seed = seed, cores = cores)
   result
  
 }

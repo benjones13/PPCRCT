@@ -32,6 +32,7 @@ NPP(
   adapt_delta_npp = 0.95,
   a0_increment = 0.05,
   seed = 12345,
+  parallel = F,
   ...
 )
 }
@@ -96,7 +97,7 @@ NPP(
 TO UPDATE
 }
 \description{
-NPP is used to fit a Normalised Power Prior (NPP) to analysis of a (crruent) dataset, using a second (historical) dataset to formulate the power prior.
+NPP is used to fit a Normalised Power Prior (NPP) to analysis of a (current) dataset, using a second (historical) dataset to formulate the power prior.
 }
 \examples{
 TO UPDATE;

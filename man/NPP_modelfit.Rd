@@ -25,7 +25,8 @@ NPP_modelfit(
   thin_npp,
   adapt_delta_npp,
   C_grid = C_grid,
-  seed = seed
+  seed = seed,
+  cores = cores
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ NPP_modelfit(
 \item{sigma.prior.parm}{The rate parameter for the exponential prior distribution for the residual standard deviation.  Passed from \link[PPCRCT]{NPP}.}
 
 \item{seed}{Set the seed.}
+
+\item{cores}{Number of cores to use in MCMC procedure.}
 
 \item{nits_normalise}{An integer. Number of iterations per chain used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. Passed from \link[PPCRCT]{NPP}.}
 
