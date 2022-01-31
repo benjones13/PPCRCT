@@ -62,14 +62,15 @@ Ca0_fun = function(X0 = X0,
                                reg_prior_sd = reg.prior.sd,
                                sigma_b_prior = sigma.b.prior.parm,
                                sigma_prior = sigma.prior.parm)
-       #if(sigma.b.prior == "hcauchy"){
+       if(sigma.b.prior == "hcauchy"){
        result = suppressWarnings(rstan::sampling(stanmodels$Hier_PP_HistoricOnly_hcauchy, data = PP_histonly_dat, refresh = 0,
                                 control = list(adapt_delta = adapt_delta_normalise, max_treedepth = max_treedepth_normalise),
                                 iter = nits_normalise, thin = thin_normalise, seed = seed, warmup = burnin_normalise))
-       # }else if(sigma.b.prior == "hnormal"){
-       #   result = rstan::sampling(stanmodels$Hier_PP_HistoricOnly_hnormal, data = PP_histonly_dat, refresh = 0,
-       #                            control = list(adapt_delta = adapt_delta_normalise, max_treedepth = max_treedepth_normalise),
-       #                            iter = nits_normalise, thin = thin_normalise, seed = seed, warmup = burnin_normalise)       }
+       }else if(sigma.b.prior == "hnormal"){
+         result = suppressWarnings(rstan::sampling(stanmodels$Hier_PP_HistoricOnly_hnormal, data = PP_histonly_dat, refresh = 0,
+                                  control = list(adapt_delta = adapt_delta_normalise, max_treedepth = max_treedepth_normalise),
+                                  iter = nits_normalise, thin = thin_normalise, seed = seed, warmup = burnin_normalise))
+         }
        t <- rstan::get_sampler_params(result, inc_warmup = F)
        divergent <- sum(t[[1]][,"divergent__"],t[[2]][,"divergent__"],t[[3]][,"divergent__"],t[[4]][,"divergent__"])
        success = ifelse(divergent == 0,T,F)

@@ -213,6 +213,17 @@ NPP = function(X,
   if(thin_npp <= 0){
     stop("thin must be positive")
   }
+  
+  print("Prior distributions are:")
+  print(paste("Sigma ~ Exponential(",sigma.prior.parm,")"))
+  print(paste("Sigma_b ~ ", ifelse(sigma.b.prior == "hcauchy", "Half-Cauchy(", "Half-Normal("), sigma.b.prior.parm,")"))
+  print(paste("Intercept ~ Normal(",intercept.prior.mean,",",intercept.prior.sd,")"))
+  print(paste("Treatment Effect ~ Normal(",reg.prior.mean[1],",",reg.prior.sd[1],")"))
+  for(i in 2:ncol(X0)){
+    print(paste("Regression parameter ",i-1, "~ Normal(",reg.prior.mean[i],",",reg.prior.sd[1],")"))
+    
+  }
+  
 
   print("Data checks ok. Calculating the normalising constant...")
   ##Normalisation Approximation
