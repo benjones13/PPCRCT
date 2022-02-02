@@ -76,4 +76,5 @@ NPP_modelfit = function(X,
                              cores = cores, iter = nits_npp, thin = thin_npp, seed = seed, warmup = burnin_npp)
   }
   
+  result
 }

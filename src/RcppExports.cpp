@@ -9,12 +9,16 @@ using namespace Rcpp;
 
 RcppExport SEXP _rcpp_module_boot_stan_fit4Hier_PP_HistoricOnly_hcauchy_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4Hier_PP_HistoricOnly_hnormal_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4Hier_PP_fixed_hcauchy_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4Hier_PP_fixed_hnormal_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4Hier_PP_hcauchy_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4Hier_PP_hnormal_mod();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_rcpp_module_boot_stan_fit4Hier_PP_HistoricOnly_hcauchy_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4Hier_PP_HistoricOnly_hcauchy_mod, 0},
     {"_rcpp_module_boot_stan_fit4Hier_PP_HistoricOnly_hnormal_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4Hier_PP_HistoricOnly_hnormal_mod, 0},
+    {"_rcpp_module_boot_stan_fit4Hier_PP_fixed_hcauchy_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4Hier_PP_fixed_hcauchy_mod, 0},
+    {"_rcpp_module_boot_stan_fit4Hier_PP_fixed_hnormal_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4Hier_PP_fixed_hnormal_mod, 0},
     {"_rcpp_module_boot_stan_fit4Hier_PP_hcauchy_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4Hier_PP_hcauchy_mod, 0},
     {"_rcpp_module_boot_stan_fit4Hier_PP_hnormal_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4Hier_PP_hnormal_mod, 0},
     {NULL, NULL, 0}

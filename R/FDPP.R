@@ -216,4 +216,14 @@ FDPP = function(X,
                           X = X,
                           a_0 = a0)
   
+    if(sigma.b.prior == "hcauchy"){
+      result = rstan::sampling(stanmodels$Hier_PP_fixed_hcauchy, data = fixed_a0_dat,
+                               control = list(adapt_delta = adapt_delta_fdpp, max_treedepth = max_treedepth_fdpp),
+                               cores = cores, iter = nits_fdpp, thin = thin_fdpp, seed = seed, warmup = burnin_fdpp)
+    }else if(sigma.b.prior == "hnormal"){
+      result = rstan::sampling(stanmodels$Hier_PP_fixed_hnormal, data = fixed_a0_dat,
+                               control = list(adapt_delta = adapt_delta_fdpp, max_treedepth = max_treedepth_fdpp),
+                               cores = cores, iter = nits_fdpp, thin = thin_fdpp, seed = seed, warmup = burnin_fdpp)
+    }
+    result
 } 
