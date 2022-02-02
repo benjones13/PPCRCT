@@ -4,7 +4,33 @@
 \alias{FDPP}
 \title{Fitting Fixed Discounting Power Priors}
 \usage{
-FDPP()
+FDPP(
+  X,
+  X0,
+  Y,
+  Y0,
+  Z,
+  Z0,
+  a0,
+  partial.borrowing = F,
+  sigma.b.prior = c("hnormal", "hcauchy"),
+  intercept.prior.mean = 0,
+  intercept.prior.sd = NULL,
+  reg.prior.mean = 0,
+  reg.prior.sd = NULL,
+  sigma.b.prior.parm = NULL,
+  sigma.prior.parm = NULL,
+  adapt_delta_normalise = 0.95,
+  nits_fdpp = 5000,
+  burnin_fdpp = NULL,
+  nchains_fdpp = 4,
+  max_treedepth_fdpp = 10,
+  thin_fdpp = 1,
+  adapt_delta_fdpp = 0.95,
+  seed = 12345,
+  parallel = F,
+  ...
+)
 }
 \arguments{
 \item{X}{A matrix. The design matrix for the current dataset, excluding the intercept term. The first column must represent treatment allocation.}
@@ -18,6 +44,10 @@ FDPP()
 \item{Z}{A vector of consecutive integers containing cluster indices for the current dataset.}
 
 \item{Z0}{A vector of consecutive integers containing cluster indices for the historical dataset.}
+
+\item{a0}{The discounting factor. Must be a value between 0 and 1.}
+
+\item{partial.borrowing}{logic. If true, the partial borrowing power prior is used (borrowing information from the treatment effect parameter only). Defaults to FALSE}
 
 \item{sigma.b.prior}{One of either "hnormal" or "hcauchy" to indicated whethere a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter}
 
@@ -43,11 +73,11 @@ FDPP()
 
 \item{thin_fdpp}{A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure fitting the NPP model. Defaults to 1}
 
-\item{adapt_delta_npp}{Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation}
-
-\item{a0_increment}{Value of the increments by which \code{a0} is increased between each estimation of the normalising constant.}
+\item{adapt_delta_fdpp}{Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation}
 
 \item{seed}{Set the seed.}
+
+\item{parallel}{logical. If TRUE, parallelisation of MCMC chains is implemented.}
 
 \item{...}{Further arguments passed to or from other methods}
 }

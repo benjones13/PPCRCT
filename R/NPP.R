@@ -28,7 +28,7 @@
 #' @param adapt_delta_npp Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation
 #' @param a0_increment Value of the increments by which \code{a0} is increased between each estimation of the normalising constant. 
 #' @param seed Set the seed.
-#' @parallel logical. If TRUE, parallelisation of MCMC chains is implemented.
+#' @param parallel logical. If TRUE, parallelisation of MCMC chains is implemented.
 #' @param ... Further arguments passed to or from other methods
 #' @return TO UPDATE
 #' @examples 

@@ -91,6 +91,8 @@ NPP(
 
 \item{seed}{Set the seed.}
 
+\item{parallel}{logical. If TRUE, parallelisation of MCMC chains is implemented.}
+
 \item{...}{Further arguments passed to or from other methods}
 }
 \value{

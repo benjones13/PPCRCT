@@ -1,6 +1,6 @@
 Package: PPCRCT
 Title: Power Priors for Cluster Randomised Controlled Trials
-Version: 0.0.17
+Version: 0.0.18
 Authors@R: c(
   person("Ben", "Jones", email = "b.g.jones@exeter.ac.uk", role = c("aut", "cre"))
   )
