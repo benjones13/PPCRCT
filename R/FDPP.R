@@ -221,8 +221,30 @@ FDPP = function(X,
                         sigma_b_prior = sigma.b.prior.parm,
                         sigma_prior = sigma.prior.parm,
                         a_0 = a0)
-  
-    if(sigma.b.prior == "hcauchy"){
+    
+    if(!partial.borrowing){
+      
+      fixed_a0_dat = list(N0 = nrow(X0),
+                          J0 = length(unique(Z0)),
+                          N = nrow(X),
+                          J = length(unique(Z)),
+                          P = ncol(X),
+                          y0 = Y0,
+                          y = Y,
+                          Z0 = Z0,
+                          Z = Z,
+                          X0 = X0,
+                          X = X,
+                          intercept_prior_mean = intercept.prior.mean,
+                          intercept_prior_sd = intercept.prior.sd,
+                          reg_prior_mean = reg.prior.mean,
+                          reg_prior_sd = reg.prior.sd,
+                          sigma_b_prior = sigma.b.prior.parm,
+                          sigma_prior = sigma.prior.parm,
+                          a_0 = a0)
+      
+      
+      if(sigma.b.prior == "hcauchy"){
       result = rstan::sampling(stanmodels$Hier_PP_fixed_hcauchy, data = fixed_a0_dat,
                                control = list(adapt_delta = adapt_delta_fdpp, max_treedepth = max_treedepth_fdpp),
                                cores = cores, iter = nits_fdpp, thin = thin_fdpp, seed = seed, warmup = burnin_fdpp)
@@ -231,5 +253,39 @@ FDPP = function(X,
                                control = list(adapt_delta = adapt_delta_fdpp, max_treedepth = max_treedepth_fdpp),
                                cores = cores, iter = nits_fdpp, thin = thin_fdpp, seed = seed, warmup = burnin_fdpp)
     }
+    }else if(partial.borrowing){
+      
+      fixed_a0_dat = list(N0 = nrow(X0),
+                          J0 = length(unique(Z0)),
+                          N = nrow(X),
+                          J = length(unique(Z)),
+                          P = ncol(X),
+                          y0 = Y0,
+                          y = Y,
+                          Z0 = Z0,
+                          Z = Z,
+                          Trt0 = X0[,1],
+                          X0 = matrix(X0[,2:(ncol(X0))]),
+                          X = X,
+                          intercept_prior_mean = intercept.prior.mean,
+                          intercept_prior_sd = intercept.prior.sd,
+                          reg_prior_mean = reg.prior.mean,
+                          reg_prior_sd = reg.prior.sd,
+                          sigma_b_prior = sigma.b.prior.parm,
+                          sigma_prior = sigma.prior.parm,
+                          a_0 = a0)
+      
+      if(sigma.b.prior == "hcauchy"){
+        result = rstan::sampling(stanmodels$Hier_PP_fixed_hcauchy_pbpp, data = fixed_a0_dat,
+                                 control = list(adapt_delta = adapt_delta_fdpp, max_treedepth = max_treedepth_fdpp),
+                                 cores = cores, iter = nits_fdpp, thin = thin_fdpp, seed = seed, warmup = burnin_fdpp)
+      }else if(sigma.b.prior == "hnormal"){
+        result = rstan::sampling(stanmodels$Hier_PP_fixed_hnormal_pbpp, data = fixed_a0_dat,
+                                 control = list(adapt_delta = adapt_delta_fdpp, max_treedepth = max_treedepth_fdpp),
+                                 cores = cores, iter = nits_fdpp, thin = thin_fdpp, seed = seed, warmup = burnin_fdpp)
+      }
+      
+    }
+    
     result
 } 

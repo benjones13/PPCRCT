@@ -57,8 +57,6 @@ Ca0_fun(
 \item{a0_increment}{Value of the increments by which \code{a0} is increased between each estimation of the normalising constant.}
 
 \item{seed}{Set the seed.}
-
-\item{cores}{Number of cores to use in MCMC procedure.}
 }
 \value{
 Returns a grid of values of \code{a0} between 0 and 1 of length 10000, and associated estimates of the normalising constant.
