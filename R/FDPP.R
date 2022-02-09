@@ -1,33 +1,31 @@
 #' Fitting Fixed Discounting Power Priors
 #'
-#' FDPP is used to fit a Fixed Discounting Power Prior (FDPP) to analysis of a (current) dataset, using a second (historical) dataset to formulate the power prior.
+#' FDPP is used to fit a Fixed Discounting Power Prior (FDPP) to analysis of a (current) dataset, using a second (historical) dataset to formulate the power prior, where both datasets contain clustering.
 #' @param X A matrix. The design matrix for the current dataset, excluding the intercept term. The first column must represent treatment allocation.
 #' @param X0 A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation.
-#' @param Y A vector containing the outcome data for the current dataset
-#' @param Y0 A vector containing the outcome data for the current dataset
+#' @param Y A vector containing the outcome data for the current dataset.
+#' @param Y0 A vector containing the outcome data for the historical dataset.
 #' @param Z A vector of consecutive integers containing cluster indices for the current dataset.
-#' @param Z0 A vector of consecutive integers containing cluster indices for the historical dataset. 
+#' @param Z0 A vector of consecutive integers containing cluster indices for the historical dataset.  
 #' @param a0 The discounting factor. Must be a value between 0 and 1.
-#' @param partial.borrowing logic. If true, the partial borrowing power prior is used (borrowing information from the treatment effect parameter only). Defaults to FALSE
-#' @param sigma.b.prior One of either "hnormal" or "hcauchy" to indicated whethere a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter
-#' @param intercept.prior.mean The mean for the normal prior distribution for the intercept
+#' @param partial.borrowing logical. If true, the partial borrowing power prior is used (borrowing information from the treatment effect parameter only). If FALSE, the fixed Discounting Power Prior (borrowing information from all parameters) is used. Defaults to FALSE
+#' @param sigma.b.prior One of either "hnormal" or "hcauchy" to indicate whether a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter
+#' @param intercept.prior.mean The mean for the normal prior distribution for the intercept. Defaults to 0.
 #' @param intercept.prior.sd The standard deviation for the normal prior distribution for the intercept
 #' @param reg.prior.mean A vector of means for the normal prior distribution for each of the regression coefficients (of length equal to the number of columns of \code{X0}). 
 #' @param reg.prior.sd A vector of standard deviations for the normal prior distribution for each of the regression coefficients(of length equal to the number of columns of \code{X0}). 
-#' @param sigma.b.prior.parm The parameter for the prior distribution on the between cluster standard deviation. If \code{sigma.b.prior = "hcauchy"} this represents the scale parameter of the half-cauchy distribution. If \code{sigma.b.prior = "hnormal"} this represents that standard deviation parameter of the half-normal distribution.
+#' @param sigma.b.prior.parm The parameter for the prior distribution on the between-cluster standard deviation. If \code{sigma.b.prior = "hcauchy"} this represents the scale parameter of the Half-Cauchy distribution. If \code{sigma.b.prior = "hnormal"} this represents that standard deviation parameter of the Half-Normal distribution.
 #' @param sigma.prior.parm The rate parameter for the exponential prior distribution for the residual standard deviation.
-#' @param nits_fdpp An integer. Number of iterations per chain to be used in the Markov Chain Monte Carlo procedure for fitting the NPP model
-#' @param burnin_fdpp An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the NPP model
-#' @param nchains_fdpp An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for estimating the normalising constant
-#' @param max_treedepth_fdpp Maximum treedepth for the Markov Chain monte carlo procedure for estimating the NPP. See link stan documentation
-#' @param thin_fdpp A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure fitting the NPP model. Defaults to 1
-#' @param adapt_delta_fdpp Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation
+#' @param nits_fdpp An integer. Number of iterations per chain to be used in the Markov Chain Monte Carlo procedure for fitting the FDPP model. Defaults to 5000. See [rstan::stan()] for further details.
+#' @param burnin_fdpp An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the FDPP model. See [rstan::stan()] for further details.
+#' @param nchains_fdpp An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for fitting the FDPP model. Defaults to 4. See [rstan::stan()] for further details.
+#' @param max_treedepth_fdpp Maximum treedepth for the Markov Chain monte carlo procedure for fitting the FDPP model. Defaults to 10. See [rstan::stan()] for further details.
+#' @param thin_fdpp A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure fitting the FDPP model. Defaults to 1. See [rstan::stan()] for further details.
+#' @param adapt_delta_fdpp Value of adapt delta used in the Markov Chain Monte Carlo procedure for fitting the FDPP model. Defaults to 0.95. See [rstan::stan()] for further details.
 #' @param seed Set the seed.
 #' @param parallel logical. If TRUE, parallelisation of MCMC chains is implemented.
 #' @param ... Further arguments passed to or from other methods
-#' @return TO UPDATE
-#' @examples 
-#' TO UPDATE;
+#' @return An object of S4 class stanfit representing the fitted results. \code{beta[1]} represents the treatment effect parameter.
 #' @export
 FDPP = function(X, 
                 X0, 
@@ -44,7 +42,6 @@ FDPP = function(X,
                 reg.prior.sd = NULL,
                 sigma.b.prior.parm = NULL,
                 sigma.prior.parm = NULL,
-                adapt_delta_normalise = 0.95,
                 nits_fdpp = 5000,
                 burnin_fdpp = NULL,
                 nchains_fdpp = 4,
@@ -116,6 +113,17 @@ FDPP = function(X,
                      "Y contains ", length(Y), " elements. \n", 
                      "Z contains ", length(Z), " elements.")))
     }
+  
+  #Check for missing data 
+  
+  if(max(is.na(cbind(X0,Y0,Z0))) > 0){
+    stop("Missing data identified in historical data. Please remove and try again")
+  }
+  
+  if(max(is.na(cbind(X,Y,Z))) > 0){
+    stop("Missing data identified in current data. Please remove and try again")
+  }
+  
     
     if(identical(sigma.b.prior, c("hnormal", "hcauchy"))){
       sigma.b.prior = ifelse(length(unique(Z0)) < 5, "hcauchy", "hnormal")
@@ -203,88 +211,53 @@ FDPP = function(X,
     }
     print("Fitting the FDPP")
     
-    fixed_a0_dat = list(N0 = nrow(X0),
-                        J0 = length(unique(Z0)),
-                        N = nrow(X),
-                        J = length(unique(Z)),
-                        P = ncol(X),
-                        y0 = Y0,
-                        y = Y,
-                        Z0 = Z0,
-                        Z = Z,
-                        X0 = X0,
-                        X = X,
-                        intercept_prior_mean = intercept.prior.mean,
-                        intercept_prior_sd = intercept.prior.sd,
-                        reg_prior_mean = reg.prior.mean,
-                        reg_prior_sd = reg.prior.sd,
-                        sigma_b_prior = sigma.b.prior.parm,
-                        sigma_prior = sigma.prior.parm,
-                        a_0 = a0)
-    
     if(!partial.borrowing){
+      result = FDPP_modelfit(X = X,
+                             X0 = X0,
+                             Y = Y,
+                             Y0 = Y0,
+                             Z = Z,
+                             Z0 = Z0,
+                             a0 = a0,
+                             sigma.b.prior = sigma.b.prior,
+                             intercept.prior.mean = intercept.prior.mean,
+                             intercept.prior.sd = intercept.prior.sd,
+                             reg.prior.mean = reg.prior.mean,
+                             reg.prior.sd = reg.prior.sd,
+                             sigma.b.prior.parm = sigma.b.prior.parm,
+                             sigma.prior.parm = sigma.prior.parm,
+                             nits_fdpp = nits_fdpp,
+                             burnin_fdpp = burnin_fdpp,
+                             nchains_fdpp = nchains_fdpp,
+                             max_treedepth_fdpp = max_treedepth_fdpp,
+                             thin_fdpp = thin_fdpp,
+                             adapt_delta_fdpp = adapt_delta_fdpp,
+                             seed = seed,
+                             cores = cores)
       
-      fixed_a0_dat = list(N0 = nrow(X0),
-                          J0 = length(unique(Z0)),
-                          N = nrow(X),
-                          J = length(unique(Z)),
-                          P = ncol(X),
-                          y0 = Y0,
-                          y = Y,
-                          Z0 = Z0,
-                          Z = Z,
-                          X0 = X0,
-                          X = X,
-                          intercept_prior_mean = intercept.prior.mean,
-                          intercept_prior_sd = intercept.prior.sd,
-                          reg_prior_mean = reg.prior.mean,
-                          reg_prior_sd = reg.prior.sd,
-                          sigma_b_prior = sigma.b.prior.parm,
-                          sigma_prior = sigma.prior.parm,
-                          a_0 = a0)
-      
-      
-      if(sigma.b.prior == "hcauchy"){
-      result = rstan::sampling(stanmodels$Hier_PP_fixed_hcauchy, data = fixed_a0_dat,
-                               control = list(adapt_delta = adapt_delta_fdpp, max_treedepth = max_treedepth_fdpp),
-                               cores = cores, iter = nits_fdpp, thin = thin_fdpp, seed = seed, warmup = burnin_fdpp)
-    }else if(sigma.b.prior == "hnormal"){
-      result = rstan::sampling(stanmodels$Hier_PP_fixed_hnormal, data = fixed_a0_dat,
-                               control = list(adapt_delta = adapt_delta_fdpp, max_treedepth = max_treedepth_fdpp),
-                               cores = cores, iter = nits_fdpp, thin = thin_fdpp, seed = seed, warmup = burnin_fdpp)
-    }
     }else if(partial.borrowing){
-      
-      fixed_a0_dat = list(N0 = nrow(X0),
-                          J0 = length(unique(Z0)),
-                          N = nrow(X),
-                          J = length(unique(Z)),
-                          P = ncol(X),
-                          y0 = Y0,
-                          y = Y,
-                          Z0 = Z0,
-                          Z = Z,
-                          Trt0 = X0[,1],
-                          X0 = matrix(X0[,2:(ncol(X0))]),
-                          X = X,
-                          intercept_prior_mean = intercept.prior.mean,
-                          intercept_prior_sd = intercept.prior.sd,
-                          reg_prior_mean = reg.prior.mean,
-                          reg_prior_sd = reg.prior.sd,
-                          sigma_b_prior = sigma.b.prior.parm,
-                          sigma_prior = sigma.prior.parm,
-                          a_0 = a0)
-      
-      if(sigma.b.prior == "hcauchy"){
-        result = rstan::sampling(stanmodels$Hier_PP_fixed_hcauchy_pbpp, data = fixed_a0_dat,
-                                 control = list(adapt_delta = adapt_delta_fdpp, max_treedepth = max_treedepth_fdpp),
-                                 cores = cores, iter = nits_fdpp, thin = thin_fdpp, seed = seed, warmup = burnin_fdpp)
-      }else if(sigma.b.prior == "hnormal"){
-        result = rstan::sampling(stanmodels$Hier_PP_fixed_hnormal_pbpp, data = fixed_a0_dat,
-                                 control = list(adapt_delta = adapt_delta_fdpp, max_treedepth = max_treedepth_fdpp),
-                                 cores = cores, iter = nits_fdpp, thin = thin_fdpp, seed = seed, warmup = burnin_fdpp)
-      }
-      
+      result = PBPP_modelfit(X = X,
+                             X0 = X0,
+                             Y = Y,
+                             Y0 = Y0,
+                             Z = Z,
+                             Z0 = Z0,
+                             a0 = a0,
+                             sigma.b.prior = sigma.b.prior,
+                             intercept.prior.mean = intercept.prior.mean,
+                             intercept.prior.sd = intercept.prior.sd,
+                             reg.prior.mean = reg.prior.mean,
+                             reg.prior.sd = reg.prior.sd,
+                             sigma.b.prior.parm = sigma.b.prior.parm,
+                             sigma.prior.parm = sigma.prior.parm,
+                             nits_fdpp = nits_fdpp,
+                             burnin_fdpp = burnin_fdpp,
+                             nchains_fdpp = nchains_fdpp,
+                             max_treedepth_fdpp = max_treedepth_fdpp,
+                             thin_fdpp = thin_fdpp,
+                             adapt_delta_fdpp = adapt_delta_fdpp,
+                             seed = seed,
+                             cores = cores)
     }
     
     result

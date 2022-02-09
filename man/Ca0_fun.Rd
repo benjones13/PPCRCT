@@ -10,7 +10,7 @@ Ca0_fun(
   Z0 = Z0,
   sigma.b.prior = sigma.b.prior,
   intercept.prior.mean = intercept.prior.mean,
-  itercept.prior.sd = intercept.prior.sd,
+  intercept.prior.sd = intercept.prior.sd,
   reg.prior.mean = reg.prior.mean,
   reg.prior.sd = reg.prior.sd,
   sigma.b.prior.parm = sigma.b.prior.parm,

@@ -20,7 +20,6 @@ FDPP(
   reg.prior.sd = NULL,
   sigma.b.prior.parm = NULL,
   sigma.prior.parm = NULL,
-  adapt_delta_normalise = 0.95,
   nits_fdpp = 5000,
   burnin_fdpp = NULL,
   nchains_fdpp = 4,
@@ -37,9 +36,9 @@ FDPP(
 
 \item{X0}{A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation.}
 
-\item{Y}{A vector containing the outcome data for the current dataset}
+\item{Y}{A vector containing the outcome data for the current dataset.}
 
-\item{Y0}{A vector containing the outcome data for the current dataset}
+\item{Y0}{A vector containing the outcome data for the historical dataset.}
 
 \item{Z}{A vector of consecutive integers containing cluster indices for the current dataset.}
 
@@ -47,11 +46,11 @@ FDPP(
 
 \item{a0}{The discounting factor. Must be a value between 0 and 1.}
 
-\item{partial.borrowing}{logic. If true, the partial borrowing power prior is used (borrowing information from the treatment effect parameter only). Defaults to FALSE}
+\item{partial.borrowing}{logical. If true, the partial borrowing power prior is used (borrowing information from the treatment effect parameter only). If FALSE, the fixed Discounting Power Prior (borrowing information from all parameters) is used. Defaults to FALSE}
 
-\item{sigma.b.prior}{One of either "hnormal" or "hcauchy" to indicated whethere a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter}
+\item{sigma.b.prior}{One of either "hnormal" or "hcauchy" to indicate whether a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter}
 
-\item{intercept.prior.mean}{The mean for the normal prior distribution for the intercept}
+\item{intercept.prior.mean}{The mean for the normal prior distribution for the intercept. Defaults to 0.}
 
 \item{intercept.prior.sd}{The standard deviation for the normal prior distribution for the intercept}
 
@@ -59,21 +58,21 @@ FDPP(
 
 \item{reg.prior.sd}{A vector of standard deviations for the normal prior distribution for each of the regression coefficients(of length equal to the number of columns of \code{X0}).}
 
-\item{sigma.b.prior.parm}{The parameter for the prior distribution on the between cluster standard deviation. If \code{sigma.b.prior = "hcauchy"} this represents the scale parameter of the half-cauchy distribution. If \code{sigma.b.prior = "hnormal"} this represents that standard deviation parameter of the half-normal distribution.}
+\item{sigma.b.prior.parm}{The parameter for the prior distribution on the between-cluster standard deviation. If \code{sigma.b.prior = "hcauchy"} this represents the scale parameter of the Half-Cauchy distribution. If \code{sigma.b.prior = "hnormal"} this represents that standard deviation parameter of the Half-Normal distribution.}
 
 \item{sigma.prior.parm}{The rate parameter for the exponential prior distribution for the residual standard deviation.}
 
-\item{nits_fdpp}{An integer. Number of iterations per chain to be used in the Markov Chain Monte Carlo procedure for fitting the NPP model}
+\item{nits_fdpp}{An integer. Number of iterations per chain to be used in the Markov Chain Monte Carlo procedure for fitting the FDPP model. Defaults to 5000. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
-\item{burnin_fdpp}{An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the NPP model}
+\item{burnin_fdpp}{An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the FDPP model. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
-\item{nchains_fdpp}{An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for estimating the normalising constant}
+\item{nchains_fdpp}{An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for fitting the FDPP model. Defaults to 4. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
-\item{max_treedepth_fdpp}{Maximum treedepth for the Markov Chain monte carlo procedure for estimating the NPP. See link stan documentation}
+\item{max_treedepth_fdpp}{Maximum treedepth for the Markov Chain monte carlo procedure for fitting the FDPP model. Defaults to 10. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
-\item{thin_fdpp}{A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure fitting the NPP model. Defaults to 1}
+\item{thin_fdpp}{A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure fitting the FDPP model. Defaults to 1. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
-\item{adapt_delta_fdpp}{Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the NPP. See link stan documentation}
+\item{adapt_delta_fdpp}{Value of adapt delta used in the Markov Chain Monte Carlo procedure for fitting the FDPP model. Defaults to 0.95. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
 \item{seed}{Set the seed.}
 
@@ -82,11 +81,8 @@ FDPP(
 \item{...}{Further arguments passed to or from other methods}
 }
 \value{
-TO UPDATE
+An object of S4 class stanfit representing the fitted results. \code{beta[1]} represents the treatment effect parameter.
 }
 \description{
-FDPP is used to fit a Fixed Discounting Power Prior (FDPP) to analysis of a (current) dataset, using a second (historical) dataset to formulate the power prior.
-}
-\examples{
-TO UPDATE;
+FDPP is used to fit a Fixed Discounting Power Prior (FDPP) to analysis of a (current) dataset, using a second (historical) dataset to formulate the power prior, where both datasets contain clustering.
 }

@@ -2,8 +2,10 @@
 
 export(Ca0_fun)
 export(FDPP)
+export(FDPP_modelfit)
 export(NPP)
 export(NPP_modelfit)
+export(PBPP_modelfit)
 import(Rcpp)
 import(methods)
 importFrom(rstan,sampling)

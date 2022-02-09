@@ -33,7 +33,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_Hier_PP_fixed_hcauchy");
-    reader.add_event(58, 56, "end", "model_Hier_PP_fixed_hcauchy");
+    reader.add_event(53, 51, "end", "model_Hier_PP_fixed_hcauchy");
     return reader;
 }
 #include <stan_meta_header.hpp>
@@ -547,7 +547,6 @@ public:
         names__.push_back("eta0_raw");
         names__.push_back("eta");
         names__.push_back("eta0");
-        names__.push_back("ICC");
     }
     void get_dims(std::vector<std::vector<size_t> >& dimss__) const {
         dimss__.resize(0);
@@ -572,8 +571,6 @@ public:
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(J0);
-        dimss__.push_back(dims__);
-        dims__.resize(0);
         dimss__.push_back(dims__);
     }
     template <typename RNG>
@@ -647,18 +644,6 @@ public:
                 }
             }
             if (!include_gqs__) return;
-            // declare and define generated quantities
-            current_statement_begin__ = 54;
-            double ICC;
-            (void) ICC;  // dummy to suppress unused var warning
-            stan::math::initialize(ICC, DUMMY_VAR__);
-            stan::math::fill(ICC, DUMMY_VAR__);
-            // generated quantities statements
-            current_statement_begin__ = 55;
-            stan::math::assign(ICC, (pow(sigma_eta, 2) / (pow(sigma_eta, 2) + pow(sigma, 2))));
-            // validate, write generated quantities
-            current_statement_begin__ = 54;
-            vars__.push_back(ICC);
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
             // Next line prevents compiler griping about no return
@@ -732,9 +717,6 @@ public:
             }
         }
         if (!include_gqs__) return;
-        param_name_stream__.str(std::string());
-        param_name_stream__ << "ICC";
-        param_names__.push_back(param_name_stream__.str());
     }
     void unconstrained_param_names(std::vector<std::string>& param_names__,
                                    bool include_tparams__ = true,
@@ -783,9 +765,6 @@ public:
             }
         }
         if (!include_gqs__) return;
-        param_name_stream__.str(std::string());
-        param_name_stream__ << "ICC";
-        param_names__.push_back(param_name_stream__.str());
     }
 }; // model
 }  // namespace

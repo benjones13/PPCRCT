@@ -60,7 +60,3 @@ model{
   target += normal_lpdf(y|mu,sigma);
 }
 
-generated quantities{
-  real ICC;
-  ICC = sigma_eta^2/(sigma_eta^2 + sigma^2);
-}
