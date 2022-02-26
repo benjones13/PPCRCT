@@ -67,11 +67,11 @@ NPP_modelfit = function(X,
                                 C_grid = C_grid)
   
   if(sigma.b.prior == "hcauchy"){
-    result = rstan::sampling(stanmodels$Hier_PP_hcauchy, data = PP_histonly_dat, refresh = 0,
+    result = rstan::sampling(stanmodels$Hier_PP_hcauchy, data = PP_histonly_dat,
                              control = list(adapt_delta = adapt_delta_npp, max_treedepth = max_treedepth_npp),
                              cores = cores, iter = nits_npp, thin = thin_npp, seed = seed, warmup = burnin_npp)
   }else if(sigma.b.prior == "hnormal"){
-    result = rstan::sampling(stanmodels$Hier_PP_hnormal, data = PP_histonly_dat, refresh = 0,
+    result = rstan::sampling(stanmodels$Hier_PP_hnormal, data = PP_histonly_dat, 
                              control = list(adapt_delta = adapt_delta_npp, max_treedepth = max_treedepth_npp),
                              cores = cores, iter = nits_npp, thin = thin_npp, seed = seed, warmup = burnin_npp)
   }

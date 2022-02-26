@@ -129,46 +129,42 @@ FDPP = function(X,
       sigma.b.prior = ifelse(length(unique(Z0)) < 5, "hcauchy", "hnormal")
     }
     
-    ##Prior distributions
-    #Intercept
-    if(is.null(intercept.prior.sd)){
-      intercept.prior.sd = sd(Y0) * 2.5
+  ##Prior distributions
+  #Intercept
+  if(is.null(intercept.prior.sd)){
+    intercept.prior.sd = sd(Y0) * 2.5
+  }
+  #Regression parameters
+  if(is.null(reg.prior.mean)){
+    reg.prior.mean = rep(0, ncol(X0))
+  }else if(length(reg.prior.mean) != ncol(X0)){
+    stop("You must specify prior means for each regression coefficient (i.e. the length of reg.prior.mean must be the same as the number of columns in X0)")
+  }
+  
+  if(is.null(reg.prior.sd)){
+    reg.prior.sd = rep(NA, ncol(X0))
+    for(i in 1:(ncol(X0))){
+      reg.prior.sd[i] = 2.5 * sd(Y0) / sd(X0[,i])
     }
-    
-    #Regression parameters
-    if(is.null(reg.prior.mean)){
-      reg.prior.mean = rep(0, ncol(X0))
-    }else if(length(reg.prior.mean) != ncol(X0)){
-      stop("You must specify prior means for each regression coefficient (i.e. the length of reg.prior.mean must be the same as the number of columns in X0)")
-    }
-    
-    if(is.null(reg.prior.sd)){
-      reg.prior.sd = rep(NA, ncol(X0))
-      for(i in 1:(ncol(X0))){
-        reg.prior.sd[i] = 2.5 * sd(Y0) * sd(X0[,i])
-      }
-    }else if(length(reg.prior.sd) != ncol(X0)){
-      stop("You must specify prior sds for each regression coefficient (i.e. the length of reg.prior.sd must be the same as the number of columns in X0)")
-    }
-    
-    #prior for the Between cluster variance
-    if(is.null(sigma.b.prior.parm)){
-      d = as.data.frame(Z0 = Z0,X0 = X0)
-      sigma.b.prior.parm = ifelse(sigma.b.prior == "hcauchy",sd(ddply(d, .(Z0), summarize, mean(BMI2sds, na.rm = T))[,2])/2, sd(ddply(d, .(Z0),
-                                                                                                                                      summarize, mean(BMI2sds, na.rm = T))[,2]) * 10)
-      rm(d)                                                                                                                                          
-    }
-    if(sigma.b.prior.parm <= 0){
-      stop("sigma.b.prior.parm must be greater than zero.")
-    }
-    
-    #Prior for the residual SD
-    if(is.null(sigma.prior.parm)){
-      sigma.prior.parm = 1/sd(y, na.rm = T)
-    }
-    if(sigma.prior.parm <= 0){
-      stop("sigma.prior.parm must be greater than zero.")
-    }
+  }else if(length(reg.prior.sd) != ncol(X0)){
+    stop("You must specify prior sds for each regression coefficient (i.e. the length of reg.prior.sd must be the same as the number of columns in X0)")
+  }
+  #prior for the Between cluster variance
+  if(is.null(sigma.b.prior.parm)){
+    d <- data.frame(Z0 = Z0,Y0 = Y0)
+    sigma.b.prior.parm = ifelse(sigma.b.prior == "hcauchy",sd(ddply(d, .(Z0), summarize, mean(Y0, na.rm = T))[,2])/2, sd(ddply(d, .(Z0),
+                                                                                                                               summarize, mean(Y0, na.rm = T))[,2]) * 10)
+  }
+  if(sigma.b.prior.parm <= 0){
+    stop("sigma.b.prior.parm must be greater than zero.")
+  }
+  #Prior for the residual SD
+  if(is.null(sigma.prior.parm)){
+    sigma.prior.parm = 1/sd(Y0, na.rm = T)
+  }
+  if(sigma.prior.parm <= 0){
+    stop("sigma.prior.parm must be greater than zero.")
+  }
     
     
     #Checking Stan inputs
@@ -194,15 +190,15 @@ FDPP = function(X,
       stop("thin must be positive")
     }
     
-    print("Prior distributions are:")
-    print(paste("Sigma ~ Exponential(",sigma.prior.parm,")"))
-    print(paste("Sigma_b ~ ", ifelse(sigma.b.prior == "hcauchy", "Half-Cauchy(", "Half-Normal("), sigma.b.prior.parm,")"))
-    print(paste("Intercept ~ Normal(",intercept.prior.mean,",",intercept.prior.sd,")"))
-    print(paste("Treatment Effect ~ Normal(",reg.prior.mean[1],",",reg.prior.sd[1],")"))
-    for(i in 2:ncol(X0)){
-      print(paste("Regression parameter ",i-1, "~ Normal(",reg.prior.mean[i],",",reg.prior.sd[1],")"))
-      
-    }
+  print("Prior distributions are:")
+  print(paste("Sigma ~ Exponential(",sigma.prior.parm,")"))
+  print(paste("Sigma_b ~ ", ifelse(sigma.b.prior == "hcauchy", "Half-Cauchy(", "Half-Normal("), sigma.b.prior.parm,")"))
+  print(paste("Intercept ~ Normal(",intercept.prior.mean,",",intercept.prior.sd,")"))
+  print(paste("Treatment Effect ~ Normal(",reg.prior.mean[1],",",reg.prior.sd[1],")"))
+  for(i in 2:ncol(X0)){
+    print(paste("Regression parameter ",i-1, "~ Normal(",reg.prior.mean[i],",",reg.prior.sd[i],")"))
+    
+  }
     
     if(parallel){
       cores = parallel::detectCores()
