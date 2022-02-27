@@ -1,10 +1,10 @@
 #' Fitting Fixed Discounting Power Priors
 #'
-#' FDPP is used to fit a Fixed Discounting Power Prior (FDPP) to analysis of a (current) dataset, using a second (historical) dataset to formulate the power prior, where both datasets contain clustering.
-#' @param X A matrix. The design matrix for the current dataset, excluding the intercept term. The first column must represent treatment allocation.
-#' @param X0 A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation.
-#' @param Y A vector containing the outcome data for the current dataset.
-#' @param Y0 A vector containing the outcome data for the historical dataset.
+#' FDPP is used to fit a Fixed Discounting Power Prior (FDPP) to analysis of a (current) dataset, using a second (historical) dataset to formulate the Power Prior, where both datasets contain clustering.
+#' @param X A matrix. The design matrix for the current dataset, excluding the intercept term. The first column must represent treatment allocation, where a 1 represents treatment and 0 represents control.
+#' @param X0 A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation, where a 1 represents treatment and 0 represents control.
+#' @param Y A vector containing the continuous outcome data for the current dataset.
+#' @param Y0 A vector containing the continuous outcome data for the historical dataset.
 #' @param Z A vector of consecutive integers containing cluster indices for the current dataset.
 #' @param Z0 A vector of consecutive integers containing cluster indices for the historical dataset.  
 #' @param a0 The discounting factor. Must be a value between 0 and 1.
@@ -17,13 +17,13 @@
 #' @param sigma.b.prior.parm The parameter for the prior distribution on the between-cluster standard deviation. If \code{sigma.b.prior = "hcauchy"} this represents the scale parameter of the Half-Cauchy distribution. If \code{sigma.b.prior = "hnormal"} this represents that standard deviation parameter of the Half-Normal distribution.
 #' @param sigma.prior.parm The rate parameter for the exponential prior distribution for the residual standard deviation.
 #' @param nits_fdpp An integer. Number of iterations per chain to be used in the Markov Chain Monte Carlo procedure for fitting the FDPP model. Defaults to 5000. See [rstan::stan()] for further details.
-#' @param burnin_fdpp An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the FDPP model. See [rstan::stan()] for further details.
+#' @param burnin_fdpp An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the FDPP model. Defaults to one half of \code{nits_fdpp}. See [rstan::stan()] for further details.
 #' @param nchains_fdpp An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for fitting the FDPP model. Defaults to 4. See [rstan::stan()] for further details.
 #' @param max_treedepth_fdpp Maximum treedepth for the Markov Chain monte carlo procedure for fitting the FDPP model. Defaults to 10. See [rstan::stan()] for further details.
 #' @param thin_fdpp A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure fitting the FDPP model. Defaults to 1. See [rstan::stan()] for further details.
 #' @param adapt_delta_fdpp Value of adapt delta used in the Markov Chain Monte Carlo procedure for fitting the FDPP model. Defaults to 0.95. See [rstan::stan()] for further details.
 #' @param seed Set the seed.
-#' @param parallel logical. If TRUE, parallelisation of MCMC chains is implemented.
+#' @param parallel Logical. If TRUE, parallelisation of MCMC chains is implemented.
 #' @param ... Further arguments passed to or from other methods
 #' @return An object of S4 class stanfit representing the fitted results. \code{beta[1]} represents the treatment effect parameter.
 #' @export

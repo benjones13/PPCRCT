@@ -1,13 +1,13 @@
 #' Fitting Normalised Power Priors
 #'
-#' NPP is used to fit a Normalised Power Prior (NPP) to analysis of a (current) dataset, using a second (historical) dataset to formulate the power prior, where both datasets contain clustering.
-#' @param X A matrix. The design matrix for the current dataset, excluding the intercept term. The first column must represent treatment allocation.
-#' @param X0 A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation.
-#' @param Y A vector containing the outcome data for the current dataset.
-#' @param Y0 A vector containing the outcome data for the historical dataset.
+#' \code{NPP} is used to fit a Normalised Power Prior to analysis of a (current) dataset, using a second (historical) dataset to formulate the Power Prior, where both datasets contain clustering.
+#' @param X A matrix. The design matrix for the current dataset, excluding the intercept term. The first column must represent treatment allocation, where a 1 represents treatment and 0 represents control.
+#' @param X0 A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation, where a 1 represents treatment and 0 represents control.
+#' @param Y A vector containing the continuous outcome data for the current dataset.
+#' @param Y0 A vector containing the continuous outcome data for the historical dataset.
 #' @param Z A vector of consecutive integers containing cluster indices for the current dataset.
 #' @param Z0 A vector of consecutive integers containing cluster indices for the historical dataset. 
-#' @param sigma.b.prior One of either "hnormal" or "hcauchy" to indicate whether a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter
+#' @param sigma.b.prior One of either "hnormal" or "hcauchy" to indicate whether a Half-Normal or Half-Cauchy prior distribution should be fitted to the between-cluster SD parameter
 #' @param intercept.prior.mean The mean for the normal prior distribution for the intercept. Defaults to 0.
 #' @param intercept.prior.sd The standard deviation for the normal prior distribution for the intercept
 #' @param reg.prior.mean A vector of means for the normal prior distribution for each of the regression coefficients (of length equal to the number of columns of \code{X0}). 
@@ -15,20 +15,20 @@
 #' @param sigma.b.prior.parm The parameter for the prior distribution on the between-cluster standard deviation. If \code{sigma.b.prior = "hcauchy"} this represents the scale parameter of the Half-Cauchy distribution. If \code{sigma.b.prior = "hnormal"} this represents that standard deviation parameter of the Half-Normal distribution.
 #' @param sigma.prior.parm The rate parameter for the exponential prior distribution for the residual standard deviation.
 #' @param nits_normalise An integer. Number of iterations per chain used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. Defaults to 2000. See [rstan::stan()] for further details.
-#' @param burnin_normalise An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for estimating the normalising constant. See [rstan::stan()] for further details.
+#' @param burnin_normalise An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for estimating the normalising constant. Defaults to one half of \code{nits_normalise}. See [rstan::stan()] for further details.
 #' @param nchains_normalise An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. Defaults to 4. See [rstan::stan()] for further details.
 #' @param max_treedepth_normalise An integer. Maximum treedepth for the Markov Chain Monte Carlo procedure for estimating the normalising constant. Defaults to 10. See [rstan::stan()] for further details.
 #' @param thin_normalise A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure estimating the normalising constant. Defaults to 1. See [rstan::stan()] for further details.
 #' @param adapt_delta_normalise Value of adapt delta used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. Defaults to 0.95. See [rstan::stan()] for further details.
 #' @param nits_npp An integer. Number of iterations per chain to be used in the Markov Chain Monte Carlo procedure for fitting the NPP model. Defaults to 5000. See [rstan::stan()] for further details.
-#' @param burnin_npp An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the NPP model. See [rstan::stan()] for further details.
+#' @param burnin_npp An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the NPP model. Defaults to one half of \code{nits_npp}. See [rstan::stan()] for further details.
 #' @param nchains_npp An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for fitting the NPP model. Defaults to 4. See [rstan::stan()] for further details.
 #' @param max_treedepth_npp Maximum treedepth for the Markov Chain monte carlo procedure for fitting the NPP model. Defaults to 10. See [rstan::stan()] for further details.
 #' @param thin_npp A positive integer specifying the period for saving Markov Chain Monte Carlo samples for the procedure fitting the NPP model. Defaults to 1. See [rstan::stan()] for further details.
 #' @param adapt_delta_npp Value of adapt delta used in the Markov Chain Monte Carlo procedure for fitting the NPP model. Defaults to 0.95. See [rstan::stan()] for further details.
 #' @param a0_increment Value of the increments by which \code{a0} is increased between each estimation of the normalising constant. Defaults to 0.05.
 #' @param seed Set the seed.
-#' @param parallel logical. If TRUE, parallelisation of MCMC chains is implemented.
+#' @param parallel Logical. If TRUE, parallelisation of MCMC chains is implemented.
 #' @param ... Further arguments passed to or from other methods.
 #' @return An object of S4 class stanfit representing the fitted results. \code{beta[1]} represents the treatment effect parameter.
 #' @export

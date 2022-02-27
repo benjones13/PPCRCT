@@ -37,19 +37,19 @@ NPP(
 )
 }
 \arguments{
-\item{X}{A matrix. The design matrix for the current dataset, excluding the intercept term. The first column must represent treatment allocation.}
+\item{X}{A matrix. The design matrix for the current dataset, excluding the intercept term. The first column must represent treatment allocation, where a 1 represents treatment and 0 represents control.}
 
-\item{X0}{A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation.}
+\item{X0}{A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation, where a 1 represents treatment and 0 represents control.}
 
-\item{Y}{A vector containing the outcome data for the current dataset.}
+\item{Y}{A vector containing the continuous outcome data for the current dataset.}
 
-\item{Y0}{A vector containing the outcome data for the historical dataset.}
+\item{Y0}{A vector containing the continuous outcome data for the historical dataset.}
 
 \item{Z}{A vector of consecutive integers containing cluster indices for the current dataset.}
 
 \item{Z0}{A vector of consecutive integers containing cluster indices for the historical dataset.}
 
-\item{sigma.b.prior}{One of either "hnormal" or "hcauchy" to indicate whether a half-normal or half-cauchy prior distribution should be fitted to the between-cluster SD parameter}
+\item{sigma.b.prior}{One of either "hnormal" or "hcauchy" to indicate whether a Half-Normal or Half-Cauchy prior distribution should be fitted to the between-cluster SD parameter}
 
 \item{intercept.prior.mean}{The mean for the normal prior distribution for the intercept. Defaults to 0.}
 
@@ -65,7 +65,7 @@ NPP(
 
 \item{nits_normalise}{An integer. Number of iterations per chain used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. Defaults to 2000. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
-\item{burnin_normalise}{An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for estimating the normalising constant. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
+\item{burnin_normalise}{An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for estimating the normalising constant. Defaults to one half of \code{nits_normalise}. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
 \item{nchains_normalise}{An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for estimating the normalising constant. Defaults to 4. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
@@ -77,7 +77,7 @@ NPP(
 
 \item{nits_npp}{An integer. Number of iterations per chain to be used in the Markov Chain Monte Carlo procedure for fitting the NPP model. Defaults to 5000. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
-\item{burnin_npp}{An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the NPP model. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
+\item{burnin_npp}{An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the NPP model. Defaults to one half of \code{nits_npp}. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
 \item{nchains_npp}{An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for fitting the NPP model. Defaults to 4. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
@@ -91,7 +91,7 @@ NPP(
 
 \item{seed}{Set the seed.}
 
-\item{parallel}{logical. If TRUE, parallelisation of MCMC chains is implemented.}
+\item{parallel}{Logical. If TRUE, parallelisation of MCMC chains is implemented.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }
@@ -99,5 +99,5 @@ NPP(
 An object of S4 class stanfit representing the fitted results. \code{beta[1]} represents the treatment effect parameter.
 }
 \description{
-NPP is used to fit a Normalised Power Prior (NPP) to analysis of a (current) dataset, using a second (historical) dataset to formulate the power prior, where both datasets contain clustering.
+\code{NPP} is used to fit a Normalised Power Prior to analysis of a (current) dataset, using a second (historical) dataset to formulate the Power Prior, where both datasets contain clustering.
 }

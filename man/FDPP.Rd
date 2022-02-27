@@ -32,13 +32,13 @@ FDPP(
 )
 }
 \arguments{
-\item{X}{A matrix. The design matrix for the current dataset, excluding the intercept term. The first column must represent treatment allocation.}
+\item{X}{A matrix. The design matrix for the current dataset, excluding the intercept term. The first column must represent treatment allocation, where a 1 represents treatment and 0 represents control.}
 
-\item{X0}{A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation.}
+\item{X0}{A matrix. The design matrix for the historical dataset, excluding the intercept term. The first column must represent treatment allocation, where a 1 represents treatment and 0 represents control.}
 
-\item{Y}{A vector containing the outcome data for the current dataset.}
+\item{Y}{A vector containing the continuous outcome data for the current dataset.}
 
-\item{Y0}{A vector containing the outcome data for the historical dataset.}
+\item{Y0}{A vector containing the continuous outcome data for the historical dataset.}
 
 \item{Z}{A vector of consecutive integers containing cluster indices for the current dataset.}
 
@@ -64,7 +64,7 @@ FDPP(
 
 \item{nits_fdpp}{An integer. Number of iterations per chain to be used in the Markov Chain Monte Carlo procedure for fitting the FDPP model. Defaults to 5000. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
-\item{burnin_fdpp}{An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the FDPP model. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
+\item{burnin_fdpp}{An integer. Number of iterations per chain to be discarded in the Markov Chain Monte Carlo procedure for fitting the FDPP model. Defaults to one half of \code{nits_fdpp}. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
 \item{nchains_fdpp}{An integer. Number of chains to be used in the Markov Chain Monte Carlo procedure for fitting the FDPP model. Defaults to 4. See \code{\link[rstan:stan]{rstan::stan()}} for further details.}
 
@@ -76,7 +76,7 @@ FDPP(
 
 \item{seed}{Set the seed.}
 
-\item{parallel}{logical. If TRUE, parallelisation of MCMC chains is implemented.}
+\item{parallel}{Logical. If TRUE, parallelisation of MCMC chains is implemented.}
 
 \item{...}{Further arguments passed to or from other methods}
 }
@@ -84,5 +84,5 @@ FDPP(
 An object of S4 class stanfit representing the fitted results. \code{beta[1]} represents the treatment effect parameter.
 }
 \description{
-FDPP is used to fit a Fixed Discounting Power Prior (FDPP) to analysis of a (current) dataset, using a second (historical) dataset to formulate the power prior, where both datasets contain clustering.
+FDPP is used to fit a Fixed Discounting Power Prior (FDPP) to analysis of a (current) dataset, using a second (historical) dataset to formulate the Power Prior, where both datasets contain clustering.
 }
